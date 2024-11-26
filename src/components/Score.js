@@ -30,9 +30,15 @@ const Score = ({ notes, currentNoteIndex, isPlaying }) => {
 
       // Noten erstellen
       const vexNotes = notes.map((note, index) => {
+        const noteKey = note.vexNote.split('/')[0];
+        const octave = note.vexNote.split('/')[1];
+        
+        // Unterscheidung zwischen normalen und Vorzeichen-Noten
+        const keys = [`${noteKey}/${octave}`];
+        
         const staveNote = new VF.StaveNote({
           clef: "treble",
-          keys: [note.vexNote],
+          keys: keys,
           duration: note.duration
         });
         
@@ -41,9 +47,13 @@ const Score = ({ notes, currentNoteIndex, isPlaying }) => {
           staveNote.setStyle({ fillStyle: 'blue', strokeStyle: 'blue' });
         }
 
-        // Vorzeichen hinzufügen
-        if (note.vexNote.includes('#')) {
-          staveNote.addAccidental(0, new VF.Accidental("#"));
+        // Verbesserte Vorzeichen-Behandlung
+        if (noteKey.includes('#')) {
+          const accidental = new VF.Accidental("#");
+          staveNote.addModifier(accidental, 0);
+        } else if (noteKey.includes('b')) {
+          const accidental = new VF.Accidental("b");
+          staveNote.addModifier(accidental, 0);
         }
         
         return staveNote;

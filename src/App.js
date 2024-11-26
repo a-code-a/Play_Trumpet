@@ -10,7 +10,6 @@ function App() {
   const [octave, setOctave] = useState(4);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentNoteIndex, setCurrentNoteIndex] = useState(0);
-  const [lastCorrectTime, setLastCorrectTime] = useState(0);
   const [currentScale, setCurrentScale] = useState('C-Dur');
   
   const { valves, getValveCombination } = useValves();
@@ -28,21 +27,19 @@ function App() {
   // Effekt zum Überprüfen der Ventilkombination und Fortschreiten in der Tonleiter
   useEffect(() => {
     const combination = getValveCombination();
-    const now = Date.now();
     
-    if (combination === currentNote.combination && now - lastCorrectTime > 500) {
+    // Nur zur nächsten Note wechseln, wenn EXAKT die richtige Kombination gedrückt wird
+    if (combination === currentNote.combination) {
       if (isPlaying) {
         const octaveMultiplier = Math.pow(2, octave - 4);
         const frequency = currentNote.frequency * octaveMultiplier;
         AudioService.createTrumpetSound(frequency);
       }
       
-      setTimeout(() => {
-        setCurrentNoteIndex((prev) => (prev + 1) % currentNotes.length);
-        setLastCorrectTime(now);
-      }, 500);
+      // Direkt zur nächsten Note wechseln
+      setCurrentNoteIndex((prev) => (prev + 1) % currentNotes.length);
     }
-  }, [valves, octave, isPlaying, currentNoteIndex, lastCorrectTime, getValveCombination, currentNote, currentNotes.length]);
+  }, [valves, octave, isPlaying, currentNoteIndex, getValveCombination, currentNote, currentNotes.length]);
 
   const handlePlayToggle = () => {
     if (!isPlaying) {

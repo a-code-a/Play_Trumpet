@@ -7,17 +7,20 @@ class AudioService {
   }
 
   initialize() {
-    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    this.gainNode = this.audioContext.createGain();
-    this.gainNode.gain.value = 0;
+    // Nur initialisieren, wenn noch kein Kontext existiert
+    if (!this.audioContext) {
+      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      this.gainNode = this.audioContext.createGain();
+      this.gainNode.gain.value = 0;
 
-    this.filterNode = this.audioContext.createBiquadFilter();
-    this.filterNode.type = 'lowpass';
-    this.filterNode.frequency.value = 2000;
-    this.filterNode.Q.value = 1;
+      this.filterNode = this.audioContext.createBiquadFilter();
+      this.filterNode.type = 'lowpass';
+      this.filterNode.frequency.value = 2000;
+      this.filterNode.Q.value = 1;
 
-    this.filterNode.connect(this.gainNode);
-    this.gainNode.connect(this.audioContext.destination);
+      this.filterNode.connect(this.gainNode);
+      this.gainNode.connect(this.audioContext.destination);
+    }
   }
 
   stopCurrentSound() {
@@ -101,6 +104,7 @@ class AudioService {
     if (this.audioContext) {
       this.stopCurrentSound();
       this.audioContext.close();
+      this.audioContext = null;
     }
   }
 }
