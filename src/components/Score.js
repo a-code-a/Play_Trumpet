@@ -1,8 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Vex } from 'vexflow';
-import { SONG } from '../constants/notes';
 
-const Score = ({ currentNoteIndex, isPlaying }) => {
+const Score = ({ notes, currentNoteIndex, isPlaying }) => {
   const scoreRef = useRef(null);
 
   useEffect(() => {
@@ -21,64 +20,52 @@ const Score = ({ currentNoteIndex, isPlaying }) => {
       );
 
       // Größe setzen
-      renderer.resize(800, 200);
+      renderer.resize(800, 150);
       const context = renderer.getContext();
 
-      // Erste Zeile
-      const stave1 = new VF.Stave(10, 40, 380);
-      stave1.addClef('treble').addTimeSignature('4/4');
-      stave1.setContext(context).draw();
+      // Notensystem erstellen
+      const stave = new VF.Stave(10, 40, 750);
+      stave.addClef('treble').addTimeSignature('4/4');
+      stave.setContext(context).draw();
 
-      const stave2 = new VF.Stave(390, 40, 380);
-      stave2.setContext(context).draw();
-
-      // Zweite Zeile
-      const stave3 = new VF.Stave(10, 140, 380);
-      stave3.setContext(context).draw();
-
-      const stave4 = new VF.Stave(390, 140, 380);
-      stave4.setContext(context).draw();
-
-      // Takte definieren
-      const measures = [
-        SONG.slice(0, 4),   // Takt 1
-        SONG.slice(4, 6),   // Takt 2
-        SONG.slice(6, 10),  // Takt 3
-        SONG.slice(10, 12)  // Takt 4
-      ];
-
-      // Noten für jeden Takt erstellen und zeichnen
-      const staves = [stave1, stave2, stave3, stave4];
-      measures.forEach((measure, index) => {
-        const notes = measure.map(note => {
-          const staveNote = new VF.StaveNote({
-            clef: "treble",
-            keys: [note.vexNote],
-            duration: note.duration
-          });
-          
-          // Aktuelle Note hervorheben
-          if (isPlaying && Math.floor(currentNoteIndex / 4) === index) {
-            const noteInMeasure = currentNoteIndex % 4;
-            if (measures[index].indexOf(note) === noteInMeasure) {
-              staveNote.setStyle({ fillStyle: 'blue', strokeStyle: 'blue' });
-            }
-          }
-          
-          return staveNote;
+      // Noten erstellen
+      const vexNotes = notes.map((note, index) => {
+        const staveNote = new VF.StaveNote({
+          clef: "treble",
+          keys: [note.vexNote],
+          duration: note.duration
         });
+        
+        // Aktuelle Note hervorheben
+        if (isPlaying && index === currentNoteIndex) {
+          staveNote.setStyle({ fillStyle: 'blue', strokeStyle: 'blue' });
+        }
 
-        const voice = new VF.Voice({ num_beats: 4, beat_value: 4 });
-        voice.addTickables(notes);
-
-        const formatter = new VF.Formatter()
-          .joinVoices([voice])
-          .format([voice], 340);
-
-        voice.draw(context, staves[index]);
+        // Vorzeichen hinzufügen
+        if (note.vexNote.includes('#')) {
+          staveNote.addAccidental(0, new VF.Accidental("#"));
+        }
+        
+        return staveNote;
       });
+
+      // Voice erstellen
+      const voice = new VF.Voice({ num_beats: notes.length, beat_value: 4 });
+      voice.addTickables(vexNotes);
+
+      // Formatter erstellen und anwenden
+      const formatter = new VF.Formatter()
+        .joinVoices([voice])
+        .format([voice], 700);
+
+      // Voice zeichnen
+      voice.draw(context, stave);
+
+      // Beams für aufeinanderfolgende Achtelnoten erstellen
+      const beams = VF.Beam.generateBeams(vexNotes.filter(note => note.duration === '8'));
+      beams.forEach(beam => beam.setContext(context).draw());
     }
-  }, [currentNoteIndex, isPlaying]);
+  }, [notes, currentNoteIndex, isPlaying]);
 
   return <div className="score-container" ref={scoreRef}></div>;
 };

@@ -4,15 +4,20 @@ import Score from './components/Score';
 import Controls from './components/Controls';
 import AudioService from './services/AudioService';
 import { useValves } from './hooks/useValves';
-import { SONG } from './constants/notes';
+import { SCALES } from './constants/notes';
 
 function App() {
   const [octave, setOctave] = useState(4);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentNoteIndex, setCurrentNoteIndex] = useState(0);
   const [lastCorrectTime, setLastCorrectTime] = useState(0);
+  const [currentScale, setCurrentScale] = useState('C-Dur');
   
   const { valves, getValveCombination } = useValves();
+
+  // Aktuelle Tonleiter
+  const currentNotes = SCALES[currentScale];
+  const currentNote = currentNotes[currentNoteIndex];
 
   // Audio Context initialisieren
   useEffect(() => {
@@ -20,10 +25,9 @@ function App() {
     return () => AudioService.cleanup();
   }, []);
 
-  // Effekt zum Überprüfen der Ventilkombination und Fortschreiten im Stück
+  // Effekt zum Überprüfen der Ventilkombination und Fortschreiten in der Tonleiter
   useEffect(() => {
     const combination = getValveCombination();
-    const currentNote = SONG[currentNoteIndex];
     const now = Date.now();
     
     if (combination === currentNote.combination && now - lastCorrectTime > 500) {
@@ -34,11 +38,11 @@ function App() {
       }
       
       setTimeout(() => {
-        setCurrentNoteIndex((prev) => (prev + 1) % SONG.length);
+        setCurrentNoteIndex((prev) => (prev + 1) % currentNotes.length);
         setLastCorrectTime(now);
       }, 500);
     }
-  }, [valves, octave, isPlaying, currentNoteIndex, lastCorrectTime, getValveCombination]);
+  }, [valves, octave, isPlaying, currentNoteIndex, lastCorrectTime, getValveCombination, currentNote, currentNotes.length]);
 
   const handlePlayToggle = () => {
     if (!isPlaying) {
@@ -55,11 +59,20 @@ function App() {
     setOctave(newOctave);
   };
 
+  const handleScaleChange = (newScale) => {
+    setCurrentScale(newScale);
+    setCurrentNoteIndex(0);
+    if (isPlaying) {
+      handlePlayToggle(); // Stoppt das Spielen bei Tonleiterwechsel
+    }
+  };
+
   return (
     <div className="App">
-      <h1>B-Trompete</h1>
+      <h1>B-Trompete: Tonleitern</h1>
       
       <Score 
+        notes={currentNotes}
         currentNoteIndex={currentNoteIndex}
         isPlaying={isPlaying}
       />
@@ -67,8 +80,11 @@ function App() {
       <Controls 
         valves={valves}
         currentNoteIndex={currentNoteIndex}
+        currentScale={currentScale}
+        currentNote={currentNote}
         octave={octave}
         isPlaying={isPlaying}
+        onScaleChange={handleScaleChange}
         onOctaveChange={handleOctaveChange}
         onPlayToggle={handlePlayToggle}
       />

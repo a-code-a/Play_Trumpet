@@ -26,12 +26,47 @@ h1 {
   margin: 0 auto;
 }
 
-.current-note-info {
+.controls {
   background-color: #f8f9fa;
-  padding: 15px;
+  padding: 20px;
   border-radius: 8px;
   margin: 20px 0;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.scale-selector {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.scale-selector label {
+  margin-right: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+.scale-selector select {
+  padding: 8px 15px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.scale-selector select:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.current-note-info {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 20px 0;
 }
 
 .current-note-info h3 {
@@ -63,11 +98,13 @@ h1 {
   cursor: default;
   border-radius: 25px;
   transition: background-color 0.2s, transform 0.1s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .valve-button.pressed {
   background-color: #0056b3;
   transform: translateY(2px);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
 .octave-control {
@@ -76,11 +113,15 @@ h1 {
   justify-content: center;
   gap: 10px;
   margin: 20px 0;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
 }
 
 .octave-control label {
   font-size: 14px;
   min-width: 70px;
+  color: #333;
 }
 
 .octave-control input[type="range"] {
@@ -101,6 +142,7 @@ input[type="range"]::-webkit-slider-thumb {
   background: #007bff;
   border-radius: 50%;
   cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -110,6 +152,7 @@ input[type="range"]::-moz-range-thumb {
   border-radius: 50%;
   cursor: pointer;
   border: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
 .play-control {
@@ -117,18 +160,21 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .play-button {
-  padding: 10px 30px;
+  padding: 12px 35px;
   font-size: 18px;
   border: none;
   border-radius: 25px;
   background-color: #28a745;
   color: white;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .play-button:hover {
   background-color: #218838;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
 }
 
 .play-button.playing {

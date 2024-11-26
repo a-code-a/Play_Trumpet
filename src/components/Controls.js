@@ -1,23 +1,39 @@
 import React from 'react';
-import { SONG } from '../constants/notes';
+import { SCALES } from '../constants/notes';
 
 const Controls = ({ 
   valves, 
-  currentNoteIndex, 
+  currentNoteIndex,
+  currentScale,
+  currentNote, 
   octave, 
-  isPlaying, 
+  isPlaying,
+  onScaleChange, 
   onOctaveChange, 
   onPlayToggle 
 }) => {
   return (
     <div className="controls">
+      <div className="scale-selector">
+        <label>Tonleiter: </label>
+        <select 
+          value={currentScale} 
+          onChange={(e) => onScaleChange(e.target.value)}
+          disabled={isPlaying}
+        >
+          {Object.keys(SCALES).map(scale => (
+            <option key={scale} value={scale}>{scale}</option>
+          ))}
+        </select>
+      </div>
+
       <div className="current-note-info">
-        <h3>Aktuelle Note: {SONG[currentNoteIndex].text}</h3>
+        <h3>Aktuelle Note: {currentNote.text}</h3>
         <p>
           Ventilkombination: 
-          {SONG[currentNoteIndex].combination === 'offen' 
+          {currentNote.combination === 'offen' 
             ? 'Keine Ventile' 
-            : SONG[currentNoteIndex].combination}
+            : currentNote.combination}
         </p>
       </div>
 
