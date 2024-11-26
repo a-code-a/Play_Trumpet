@@ -11,30 +11,28 @@ const Controls = ({
   onScaleChange, 
   onOctaveChange, 
   onPlayToggle,
-  onKeyMapChange
+  onKeyMapChange,
+  className
 }) => {
   const [keyMap, setKeyMap] = useState({
-    valve1: ['1', 'q', 'a'],
-    valve2: ['2', 'w', 's'],
-    valve3: ['3', 'e', 'd']
+    valve1: '1',
+    valve2: '2',
+    valve3: '3'
   });
 
-  const handleKeyMapUpdate = () => {
-    onKeyMapChange(keyMap);
-  };
-
-  const updateSingleValveKeys = (valve, newKeys) => {
+  const handleKeyAssign = (valve, newKey) => {
     const updatedKeyMap = {
       ...keyMap,
-      [valve]: newKeys.split(',').map(key => key.trim().toLowerCase())
+      [valve]: newKey.toLowerCase()
     };
     setKeyMap(updatedKeyMap);
+    onKeyMapChange(updatedKeyMap);
   };
 
   return (
-    <div className="controls">
-      <div className="scale-selector">
-        <label>Tonleiter: </label>
+    <div className={className}>
+      <div className="sidebar-section">
+        <h3>Tonleiter</h3>
         <select 
           value={currentScale} 
           onChange={(e) => onScaleChange(e.target.value)}
@@ -46,40 +44,40 @@ const Controls = ({
         </select>
       </div>
 
-      <div className="current-note-info">
-        <h3>Aktuelle Note: {currentNote.text}</h3>
-        <p>
-          Ventilkombination: 
-          {currentNote.combination === 'offen' 
-            ? 'Keine Ventile' 
-            : currentNote.combination}
-        </p>
+      <div className="sidebar-section">
+        <h3>Ventile & Aktuelle Note</h3>
+        <div className="valves-section">
+          {['valve1', 'valve2', 'valve3'].map((valve, index) => (
+            <div key={valve} className="valve-input-group">
+              <button 
+                className={`valve-button ${valves[valve] ? 'pressed' : ''}`}
+              >
+                {index + 1}
+              </button>
+              <input 
+                type="text" 
+                maxLength="1"
+                value={keyMap[valve]}
+                onChange={(e) => handleKeyAssign(valve, e.target.value)}
+                placeholder={`Taste für Ventil ${index + 1}`}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="note-info">
+          <p>Aktuelle Note: {currentNote.text}</p>
+          <p>
+            Ventilkombination: 
+            {currentNote.combination === 'offen' 
+              ? 'Keine Ventile' 
+              : currentNote.combination}
+          </p>
+        </div>
       </div>
 
-      <div className="valves-section">
-        <button className={`valve-button ${valves.valve1 ? 'pressed' : ''}`}>1</button>
-        <button className={`valve-button ${valves.valve2 ? 'pressed' : ''}`}>2</button>
-        <button className={`valve-button ${valves.valve3 ? 'pressed' : ''}`}>3</button>
-      </div>
-
-      <div className="key-mapping-section">
-        <h4>Tastenbelegung</h4>
-        {['valve1', 'valve2', 'valve3'].map(valve => (
-          <div key={valve} className="key-mapping-input">
-            <label>{valve.replace('valve', 'Ventil ')}:</label>
-            <input 
-              type="text" 
-              value={keyMap[valve].join(', ')}
-              onChange={(e) => updateSingleValveKeys(valve, e.target.value)}
-              placeholder="Tasten durch Komma trennen"
-            />
-          </div>
-        ))}
-        <button onClick={handleKeyMapUpdate}>Tasten aktualisieren</button>
-      </div>
-
-      <div className="octave-control">
-        <label>Oktave: {octave}</label>
+      <div className="sidebar-section">
+        <h3>Oktave</h3>
+        <label>Aktuelle Oktave: {octave}</label>
         <input
           type="range"
           min="1"
@@ -89,7 +87,7 @@ const Controls = ({
         />
       </div>
 
-      <div className="play-control">
+      <div className="sidebar-section">
         <button 
           className={`play-button ${isPlaying ? 'playing' : ''}`} 
           onClick={onPlayToggle}

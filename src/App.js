@@ -11,6 +11,7 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentNoteIndex, setCurrentNoteIndex] = useState(0);
   const [currentScale, setCurrentScale] = useState('C-Dur');
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   
   // Erweiterte Tastenbelegung
   const { 
@@ -78,10 +79,19 @@ function App() {
     updateKeyMap(newKeyMap);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarVisible(!isSidebarVisible);
+  };
+
   return (
     <div className="App">
-      <h1>B-Trompete: Tonleitern</h1>
-      
+      <button 
+        className={`toggle-sidebar-btn ${!isSidebarVisible ? 'sidebar-hidden' : ''}`}
+        onClick={toggleSidebar}
+      >
+        {isSidebarVisible ? '→' : '←'}
+      </button>
+
       <Score 
         notes={currentNotes}
         currentNoteIndex={currentNoteIndex}
@@ -99,6 +109,7 @@ function App() {
         onOctaveChange={handleOctaveChange}
         onPlayToggle={handlePlayToggle}
         onKeyMapChange={handleKeyMapChange}
+        className={`sidebar ${!isSidebarVisible ? 'hidden' : ''}`}
       />
     </div>
   );
