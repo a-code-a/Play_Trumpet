@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>Trompetenspielsimulation</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .controls {
+        margin-top: 20px;
+      }
+      .key {
+        margin: 5px;
+        padding: 10px 20px;
+        font-size: 18px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+      }
+      .key:active {
+        background-color: #0056b3;
+      }
+      .octave-slider {
+        margin-top: 20px;
+      }
+      .note-display {
+        margin-top: 20px;
+        font-size: 24px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>Sie müssen JavaScript aktivieren, um diese App auszuführen.</noscript>
+    <div id="root"></div>
+    <div class="controls">
+      <button class="key" id="key1">1</button>
+      <button class="key" id="key2">2</button>
+      <button class="key" id="key3">3</button>
+    </div>
+    <div class="octave-slider">
+      <label for="octave">Oktave:</label>
+      <input type="range" id="octave" name="octave" min="0" max="8" value="4">
+    </div>
+    <div class="note-display" id="note-display">Gespielter Ton: -</div>
+  </body>
+</html>
