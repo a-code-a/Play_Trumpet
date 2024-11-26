@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  max-width: 400px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
@@ -9,9 +9,24 @@
 h1 {
   margin-bottom: 30px;
   font-size: 24px;
+  color: #333;
 }
 
-.tone-display {
+.score-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow-x: auto;
+}
+
+.score-container svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.current-note-info {
   background-color: #f8f9fa;
   padding: 15px;
   border-radius: 8px;
@@ -19,10 +34,16 @@ h1 {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.tone-display h2 {
-  margin: 0;
+.current-note-info h3 {
+  margin: 0 0 10px 0;
+  color: #007bff;
   font-size: 18px;
-  color: #333;
+}
+
+.current-note-info p {
+  margin: 5px 0;
+  color: #666;
+  font-size: 16px;
 }
 
 .valves-section {
@@ -40,10 +61,13 @@ h1 {
   background-color: #007bff;
   color: white;
   cursor: default;
+  border-radius: 25px;
+  transition: background-color 0.2s, transform 0.1s;
 }
 
 .valve-button.pressed {
   background-color: #0056b3;
+  transform: translateY(2px);
 }
 
 .octave-control {
