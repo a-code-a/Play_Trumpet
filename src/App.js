@@ -12,7 +12,16 @@ function App() {
   const [currentNoteIndex, setCurrentNoteIndex] = useState(0);
   const [currentScale, setCurrentScale] = useState('C-Dur');
   
-  const { valves, getValveCombination } = useValves();
+  // Erweiterte Tastenbelegung
+  const { 
+    valves, 
+    getValveCombination, 
+    updateKeyMap 
+  } = useValves({
+    valve1: ['1', 'q', 'a'],
+    valve2: ['2', 'w', 's'],
+    valve3: ['3', 'e', 'd']
+  });
 
   // Aktuelle Tonleiter
   const currentNotes = SCALES[currentScale];
@@ -64,6 +73,11 @@ function App() {
     }
   };
 
+  // Funktion zum Ändern der Tastenbelegung
+  const handleKeyMapChange = (newKeyMap) => {
+    updateKeyMap(newKeyMap);
+  };
+
   return (
     <div className="App">
       <h1>B-Trompete: Tonleitern</h1>
@@ -84,6 +98,7 @@ function App() {
         onScaleChange={handleScaleChange}
         onOctaveChange={handleOctaveChange}
         onPlayToggle={handlePlayToggle}
+        onKeyMapChange={handleKeyMapChange}
       />
     </div>
   );

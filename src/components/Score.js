@@ -19,12 +19,12 @@ const Score = ({ notes, currentNoteIndex, isPlaying }) => {
         VF.Renderer.Backends.SVG
       );
 
-      // Größe setzen
-      renderer.resize(800, 150);
+      // Größe deutlich erhöht
+      renderer.resize(1200, 400);
       const context = renderer.getContext();
 
-      // Notensystem erstellen
-      const stave = new VF.Stave(10, 40, 750);
+      // Notensystem erstellen mit mehr Platz
+      const stave = new VF.Stave(10, 40, 1100);
       stave.addClef('treble').addTimeSignature('4/4');
       stave.setContext(context).draw();
 
@@ -32,10 +32,8 @@ const Score = ({ notes, currentNoteIndex, isPlaying }) => {
       const vexNotes = notes.map((note, index) => {
         const noteKey = note.vexNote.split('/')[0];
         const octave = note.vexNote.split('/')[1];
-        
-        // Unterscheidung zwischen normalen und Vorzeichen-Noten
         const keys = [`${noteKey}/${octave}`];
-        
+
         const staveNote = new VF.StaveNote({
           clef: "treble",
           keys: keys,
@@ -47,13 +45,11 @@ const Score = ({ notes, currentNoteIndex, isPlaying }) => {
           staveNote.setStyle({ fillStyle: 'blue', strokeStyle: 'blue' });
         }
 
-        // Verbesserte Vorzeichen-Behandlung
+        // Vorzeichen korrekt hinzufügen
         if (noteKey.includes('#')) {
-          const accidental = new VF.Accidental("#");
-          staveNote.addModifier(accidental, 0);
+          staveNote.addModifier(new VF.Accidental("#"), 0);
         } else if (noteKey.includes('b')) {
-          const accidental = new VF.Accidental("b");
-          staveNote.addModifier(accidental, 0);
+          staveNote.addModifier(new VF.Accidental("b"), 0);
         }
         
         return staveNote;
@@ -66,7 +62,7 @@ const Score = ({ notes, currentNoteIndex, isPlaying }) => {
       // Formatter erstellen und anwenden
       const formatter = new VF.Formatter()
         .joinVoices([voice])
-        .format([voice], 700);
+        .format([voice], 1050);
 
       // Voice zeichnen
       voice.draw(context, stave);
